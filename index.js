@@ -125,34 +125,28 @@ class SvgUri extends Component{
     this.isComponentMounted = false
   }
 
-  async fetchSVGData(uri) {
-    let responseXML = null, error = null;
+  async fetchSVGData(uri){
+    let responseXML = null;
     try {
       const response = await fetch(uri);
       responseXML = await response.text();
     } catch(e) {
-      error = e;
       console.error("ERROR SVG", e);
     } finally {
       if (this.isComponentMounted) {
-        this.setState({ svgXmlData: responseXML }, () => {
-          const { onLoad } = this.props;
-          if (onLoad && !error) {
-            onLoad();
-          }
-        });
+        this.setState({svgXmlData:responseXML});
       }
     }
 
     return responseXML;
   }
-
-  // Remove empty strings from children array
+   
+  // Remove empty strings from children array  
   trimElementChilden(children) {
     for (child of children) {
       if (typeof child === 'string') {
         if (child.trim.length === 0)
-          children.splice(children.indexOf(child), 1);
+          children.splice(children.indexOf(child), 1); 
       }
     }
   }
@@ -226,11 +220,6 @@ class SvgUri extends Component{
 
   obtainComponentAtts({attributes}, enabledAttributes) {
     const styleAtts = {};
-
-    if (this.state.fill && this.props.fillAll) {
-      styleAtts.fill = this.state.fill;
-    }
-
     Array.from(attributes).forEach(({nodeName, nodeValue}) => {
       Object.assign(styleAtts, utils.transformStyle({
         nodeName,
@@ -314,8 +303,6 @@ SvgUri.propTypes = {
   svgXmlData: PropTypes.string,
   source: PropTypes.any,
   fill: PropTypes.string,
-  onLoad: PropTypes.func,
-  fillAll: PropTypes.bool
 }
 
 module.exports = SvgUri;
